@@ -31,6 +31,31 @@ const HeaderEditor = ({ block, updateBlock }) => {
                 />
             </div>
 
+            {/* 설명 텍스트 */}
+            <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>
+                    설명
+                </label>
+                <textarea
+                    value={block.content.description || ''}
+                    onChange={(e) => handleChange('description', e.target.value)}
+                    placeholder="예: 강동어울림복지관에서는 열정있는 사회복지사를 모집합니다"
+                    rows="3"
+                    style={{
+                        width: '100%',
+                        padding: '10px',
+                        fontSize: '0.95rem',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: 'var(--radius-md)',
+                        fontFamily: 'inherit',
+                        resize: 'vertical'
+                    }}
+                />
+                <p style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px' }}>
+                    이 설명은 소셜 미디어 공유 시 미리보기로 표시됩니다
+                </p>
+            </div>
+
             {/* 폰트 크기 */}
             <div>
                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>

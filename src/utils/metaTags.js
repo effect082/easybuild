@@ -5,12 +5,20 @@
 export const updateMetaTags = (project) => {
     if (!project) return;
 
-    const title = `${project.title} - ${project.author}`;
-    const description = getProjectDescription(project);
+    // Find first header block for title and description
+    const headerBlock = project.blocks?.find(block => block.type === 'header');
+
+    const title = headerBlock?.content?.text
+        ? `${headerBlock.content.text} - ${project.author}`
+        : `${project.title} - ${project.author}`;
+
+    const description = headerBlock?.content?.description
+        || getProjectDescription(project);
+
     const url = window.location.href;
 
     // Update page title
-    document.title = title;
+    document.title = headerBlock?.content?.text || project.title;
 
     // Helper function to update or create meta tag
     const updateMeta = (selector, attribute, value) => {

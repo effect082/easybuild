@@ -11,6 +11,17 @@ const HeaderBlock = ({ content, style }) => {
             ...style
         }}>
             {content.text || '제목을 입력하세요'}
+            {content.description && (
+                <div style={{
+                    fontSize: '16px',
+                    fontWeight: 'normal',
+                    color: '#666',
+                    marginTop: '10px',
+                    lineHeight: '1.6'
+                }}>
+                    {content.description}
+                </div>
+            )}
         </div>
     );
 };

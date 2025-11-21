@@ -27,17 +27,17 @@ function App() {
 
     if (encodedData) {
       // New URL-based sharing
-      decodeProjectFromUrl(encodedData)
-        .then(project => {
-          loadProject(project);
-          updateMetaTags(project);
-          setCurrentView('view_only');
-        })
-        .catch(error => {
-          alert('프로젝트를 불러올 수 없습니다: ' + error.message);
-          window.history.replaceState({}, document.title, window.location.pathname);
-          setCurrentView('list');
-        });
+      try {
+        const project = decodeProjectFromUrl(encodedData);
+        loadProject(project);
+        updateMetaTags(project);
+        setCurrentView('view_only');
+      } catch (error) {
+        console.error('Decode error:', error);
+        alert('프로젝트를 불러올 수 없습니다: ' + error.message);
+        window.history.replaceState({}, document.title, window.location.pathname);
+        setCurrentView('list');
+      }
     } else if (projectId) {
       // Legacy localStorage-based loading
       const project = loadProjectFromStorage(projectId);
@@ -90,17 +90,17 @@ function App() {
     }
   };
 
-  const handleDeploy = async () => {
+  const handleDeploy = () => {
     if (!state.currentProject) return;
     handleSaveProject(); // Auto-save before deploy
 
     try {
-      const { encodeProjectForUrl } = await import('./utils/urlSharing');
-      const encodedData = await encodeProjectForUrl(state.currentProject);
+      const encodedData = encodeProjectForUrl(state.currentProject);
       const url = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
       setDeployUrl(url);
       setShowDeployDialog(true);
     } catch (error) {
+      console.error('Deploy error:', error);
       alert('프로젝트 배포 URL 생성에 실패했습니다: ' + error.message);
     }
   };

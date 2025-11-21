@@ -1,12 +1,9 @@
 /**
  * Encode project data into a URL-safe string
- * Uses compression to reduce URL length
+ * Uses simple base64 encoding (no compression)
  */
-export const encodeProjectForUrl = async (project) => {
+export const encodeProjectForUrl = (project) => {
     try {
-        // Dynamically import pako to ensure it works in production
-        const pako = await import('pako');
-
         // Create a minimal version of project data (exclude password hash for security)
         const minimalProject = {
             id: project.id,
@@ -19,14 +16,11 @@ export const encodeProjectForUrl = async (project) => {
             updatedAt: project.updatedAt
         };
 
-        // Convert to JSON string
+        // Convert to JSON string (compact, no whitespace)
         const jsonStr = JSON.stringify(minimalProject);
 
-        // Compress using pako
-        const compressed = pako.deflate(jsonStr);
-
-        // Convert to base64
-        const base64 = btoa(String.fromCharCode.apply(null, compressed));
+        // Encode to base64
+        const base64 = btoa(unescape(encodeURIComponent(jsonStr)));
 
         // Make URL-safe
         return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
@@ -39,11 +33,8 @@ export const encodeProjectForUrl = async (project) => {
 /**
  * Decode project data from URL parameter
  */
-export const decodeProjectFromUrl = async (encodedData) => {
+export const decodeProjectFromUrl = (encodedData) => {
     try {
-        // Dynamically import pako to ensure it works in production
-        const pako = await import('pako');
-
         // Restore base64 characters
         let base64 = encodedData.replace(/-/g, '+').replace(/_/g, '/');
 
@@ -53,10 +44,7 @@ export const decodeProjectFromUrl = async (encodedData) => {
         }
 
         // Decode from base64
-        const compressed = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-
-        // Decompress
-        const jsonStr = pako.inflate(compressed, { to: 'string' });
+        const jsonStr = decodeURIComponent(escape(atob(base64)));
 
         // Parse JSON
         return JSON.parse(jsonStr);

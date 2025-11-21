@@ -75,21 +75,6 @@ const DateEditor = ({ block, updateBlock }) => {
                                         fontWeight: '600'
                                     }}
                                 />
-                                <select
-                                    value={item.type}
-                                    onChange={(e) => handleItemChange(index, 'type', e.target.value)}
-                                    style={{
-                                        padding: '8px',
-                                        border: '1px solid var(--border-color)',
-                                        borderRadius: 'var(--radius-sm)',
-                                        fontSize: '0.9rem',
-                                        backgroundColor: 'white',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    <option value="text">텍스트</option>
-                                    <option value="datetime">날짜/시간</option>
-                                </select>
                                 <button
                                     onClick={() => handleRemoveItem(index)}
                                     style={{
@@ -109,40 +94,25 @@ const DateEditor = ({ block, updateBlock }) => {
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                {item.type === 'datetime' ? (
-                                    <>
-                                        <input
-                                            type="datetime-local"
-                                            value={item.value}
-                                            onChange={(e) => handleItemChange(index, 'value', e.target.value)}
-                                            style={{
-                                                width: '100%',
-                                                padding: '10px',
-                                                border: '1px solid var(--border-color)',
-                                                borderRadius: 'var(--radius-sm)',
-                                                fontSize: '0.9rem',
-                                                fontFamily: 'inherit'
-                                            }}
-                                        />
-                                        <span style={{ fontSize: '0.75rem', color: '#666' }}>
-                                            * 날짜와 시간을 선택해주세요
-                                        </span>
-                                    </>
-                                ) : (
-                                    <input
-                                        type="text"
-                                        placeholder="내용을 입력하세요"
-                                        value={item.value}
-                                        onChange={(e) => handleItemChange(index, 'value', e.target.value)}
-                                        style={{
-                                            width: '100%',
-                                            padding: '10px',
-                                            border: '1px solid var(--border-color)',
-                                            borderRadius: 'var(--radius-sm)',
-                                            fontSize: '0.9rem'
-                                        }}
-                                    />
-                                )}
+                                <input
+                                    type="datetime-local"
+                                    value={item.value}
+                                    onChange={(e) => {
+                                        handleItemChange(index, 'value', e.target.value);
+                                        handleItemChange(index, 'type', 'datetime'); // Ensure type is always datetime
+                                    }}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        border: '1px solid var(--border-color)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        fontSize: '0.9rem',
+                                        fontFamily: 'inherit'
+                                    }}
+                                />
+                                <span style={{ fontSize: '0.75rem', color: '#666' }}>
+                                    * 날짜와 시간을 선택해주세요
+                                </span>
                             </div>
                         </div>
                     ))}

@@ -96,13 +96,13 @@ function App() {
     handleSaveProject(); // Auto-save before deploy
 
     try {
-      // Use UUID-based URL (naturally short, ~90 chars)
-      const projectId = state.currentProject.id;
+      // Use data embedding for cross-device compatibility
+      const encodedData = encodeProjectForUrl(state.currentProject);
       const baseUrl = `${window.location.origin}${window.location.pathname}`;
-      const projectUrl = `${baseUrl}?project=${projectId}`;
+      const fullUrl = `${baseUrl}?data=${encodedData}`;
 
-      // Optional: Shorten further with is.gd (~20 chars)
-      const shortUrl = await shortenUrl(projectUrl);
+      // Shorten with is.gd for short URLs (~20 chars)
+      const shortUrl = await shortenUrl(fullUrl);
 
       setDeployUrl(shortUrl);
       setShowDeployDialog(true);

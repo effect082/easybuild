@@ -68,7 +68,7 @@ export const deleteProject = (projectId, password) => {
 
 // Create new project with metadata
 export const createProject = (metadata) => {
-    const { title, type, author, password, template } = metadata;
+    const { title, type, author, password, template, category } = metadata;
 
     // Validate password (4 digits)
     if (!password || password.length !== 4 || !/^\d{4}$/.test(password)) {
@@ -80,6 +80,7 @@ export const createProject = (metadata) => {
         title,
         type,
         author,
+        category: category || 'personal', // Default to personal
         passwordHash: hashPassword(password),
         blocks: template?.blocks || [],
         createdAt: new Date().toISOString(),

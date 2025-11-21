@@ -6,6 +6,8 @@ import Canvas from './components/Editor/Canvas';
 import PropertyPanel from './components/Editor/PropertyPanel';
 import { useBlocks } from './context/BlockContext';
 import { createProject, saveProject, loadProject as loadProjectFromStorage } from './utils/projectStorage';
+import { decodeProjectFromUrl } from './utils/urlSharing';
+import { updateMetaTags } from './utils/metaTags';
 
 const CreateProjectDialog = React.lazy(() => import('./components/CreateProjectDialog'));
 const ProjectList = React.lazy(() => import('./components/ProjectList'));
@@ -21,10 +23,26 @@ function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const projectId = params.get('project');
-    if (projectId) {
+    const encodedData = params.get('data');
+
+    if (encodedData) {
+      // New URL-based sharing
+      try {
+        const project = decodeProjectFromUrl(encodedData);
+        loadProject(project);
+        updateMetaTags(project);
+        setCurrentView('view_only');
+      } catch (error) {
+        alert('프로젝트를 불러올 수 없습니다: ' + error.message);
+        window.history.replaceState({}, document.title, window.location.pathname);
+        setCurrentView('list');
+      }
+    } else if (projectId) {
+      // Legacy localStorage-based loading
       const project = loadProjectFromStorage(projectId);
       if (project) {
         loadProject(project);
+        updateMetaTags(project);
         setCurrentView('view_only');
       } else {
         alert('Project not found');
@@ -74,9 +92,18 @@ function App() {
   const handleDeploy = () => {
     if (!state.currentProject) return;
     handleSaveProject(); // Auto-save before deploy
-    const url = `${window.location.origin}${window.location.pathname}?project=${state.currentProject.id}`;
-    setDeployUrl(url);
-    setShowDeployDialog(true);
+
+    // Import dynamically to avoid circular deps
+    import('./utils/urlSharing').then(({ encodeProjectForUrl }) => {
+      try {
+        const encodedData = encodeProjectForUrl(state.currentProject);
+        const url = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
+        setDeployUrl(url);
+        setShowDeployDialog(true);
+      } catch (error) {
+        alert('프로젝트 배포 URL 생성에 실패했습니다: ' + error.message);
+      }
+    });
   };
 
   const handleCancelCreate = () => {

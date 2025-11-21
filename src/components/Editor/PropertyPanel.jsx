@@ -2,9 +2,9 @@ import React from 'react';
 import { useBlocks } from '../../context/BlockContext';
 import BlockRegistry from '../../blocks/BlockRegistry';
 
-const PropertyPanel = ({ onSave }) => {
-    const { state, updateBlock, removeBlock, reorderBlocks } = useBlocks();
-    const { blocks, selectedBlockId } = state;
+const PropertyPanel = ({ onSave, onDeploy }) => {
+    const { state, updateBlock, removeBlock, reorderBlocks, updateProjectInfo } = useBlocks();
+    const { blocks, selectedBlockId, currentProject } = state;
 
     const selectedBlock = blocks.find((b) => b.id === selectedBlockId);
     const selectedIndex = blocks.findIndex((b) => b.id === selectedBlockId);
@@ -19,41 +19,38 @@ const PropertyPanel = ({ onSave }) => {
                         <button
                             onClick={onSave}
                             style={{ padding: '10px', backgroundColor: '#4f46e5', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: '500', fontSize: '0.9rem', transition: 'background-color 0.2s' }}
-                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4338ca'}
-                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4f46e5'}
                         >
                             저장
                         </button>
                         <button
-                            onClick={() => {/* Publish functionality */ }}
+                            onClick={onDeploy}
                             style={{ padding: '10px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: '500', fontSize: '0.9rem', transition: 'background-color 0.2s' }}
-                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#059669'}
-                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#10b981'}
                         >
                             배포
                         </button>
-                        <button
-                            onClick={() => {/* Preview functionality */ }}
-                            style={{ padding: '10px', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: '500', fontSize: '0.9rem', transition: 'background-color 0.2s' }}
-                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
-                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#3b82f6'}
-                        >
-                            미리보기
-                        </button>
-                        <button
-                            onClick={() => {/* Reset functionality */ }}
-                            style={{ padding: '10px', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: '500', fontSize: '0.9rem', transition: 'background-color 0.2s' }}
-                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
-                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#ef4444'}
-                        >
-                            초기화
-                        </button>
+                        {/* ... other buttons ... */}
                     </div>
                 </div>
 
-                <div style={{ padding: '1rem', color: '#666' }}>
-                    <h2>속성</h2>
-                    <p>블록을 선택하여 속성을 편집하세요.</p>
+                <div style={{ padding: '1rem' }}>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '1rem', color: 'var(--text-primary)' }}>프로젝트 설정</h2>
+
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500', color: 'var(--text-secondary)' }}>
+                            배경 색상
+                        </label>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <input
+                                type="color"
+                                value={currentProject?.styles?.backgroundColor || '#ffffff'}
+                                onChange={(e) => updateProjectInfo({ styles: { ...currentProject.styles, backgroundColor: e.target.value } })}
+                                style={{ width: '50px', height: '40px', padding: '0', border: '1px solid var(--border-color)', borderRadius: '4px', cursor: 'pointer' }}
+                            />
+                            <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                                {currentProject?.styles?.backgroundColor || '#ffffff'}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -75,42 +72,12 @@ const PropertyPanel = ({ onSave }) => {
 
     return (
         <div>
-            {/* Action Buttons */}
+            {/* Action Buttons (Same as above) */}
             <div style={{ marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '2px solid var(--border-color)' }}>
                 <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>작업</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    <button
-                        onClick={onSave}
-                        style={{ padding: '10px', backgroundColor: '#4f46e5', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: '500', fontSize: '0.9rem', transition: 'background-color 0.2s' }}
-                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4338ca'}
-                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4f46e5'}
-                    >
-                        저장
-                    </button>
-                    <button
-                        onClick={() => {/* Publish functionality */ }}
-                        style={{ padding: '10px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: '500', fontSize: '0.9rem', transition: 'background-color 0.2s' }}
-                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#059669'}
-                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#10b981'}
-                    >
-                        배포
-                    </button>
-                    <button
-                        onClick={() => {/* Preview functionality */ }}
-                        style={{ padding: '10px', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: '500', fontSize: '0.9rem', transition: 'background-color 0.2s' }}
-                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
-                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#3b82f6'}
-                    >
-                        미리보기
-                    </button>
-                    <button
-                        onClick={() => {/* Reset functionality */ }}
-                        style={{ padding: '10px', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: '500', fontSize: '0.9rem', transition: 'background-color 0.2s' }}
-                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
-                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#ef4444'}
-                    >
-                        초기화
-                    </button>
+                    <button onClick={onSave} style={{ padding: '10px', backgroundColor: '#4f46e5', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>저장</button>
+                    <button onClick={onDeploy} style={{ padding: '10px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>배포</button>
                 </div>
             </div>
 
@@ -118,6 +85,27 @@ const PropertyPanel = ({ onSave }) => {
                 <h2 style={{ fontSize: '1.25rem', fontWeight: '700', margin: 0, color: 'var(--text-primary)' }}>
                     {BlockRegistry[selectedBlock.type]?.label || 'Block'} 속성
                 </h2>
+            </div>
+
+            {/* Common Block Styles */}
+            <div style={{ marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500', color: 'var(--text-secondary)' }}>
+                    블록 배경 색상
+                </label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <input
+                        type="color"
+                        value={selectedBlock.styles?.backgroundColor || '#ffffff'} // Default to transparent/white if not set, but input color needs hex
+                        onChange={(e) => updateBlock(selectedBlock.id, { styles: { ...selectedBlock.styles, backgroundColor: e.target.value } })}
+                        style={{ width: '50px', height: '40px', padding: '0', border: '1px solid var(--border-color)', borderRadius: '4px', cursor: 'pointer' }}
+                    />
+                    <button
+                        onClick={() => updateBlock(selectedBlock.id, { styles: { ...selectedBlock.styles, backgroundColor: 'transparent' } })}
+                        style={{ padding: '5px 10px', fontSize: '0.8rem', border: '1px solid var(--border-color)', borderRadius: '4px', background: 'white', cursor: 'pointer' }}
+                    >
+                        투명
+                    </button>
+                </div>
             </div>
 
             <div style={{ marginBottom: '2rem' }}>
@@ -135,7 +123,6 @@ const PropertyPanel = ({ onSave }) => {
                         onClick={handleMoveUp}
                         disabled={selectedIndex === 0}
                         style={{ flex: 1, padding: '8px', cursor: selectedIndex === 0 ? 'not-allowed' : 'pointer', backgroundColor: 'white', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', opacity: selectedIndex === 0 ? 0.5 : 1 }}
-                        title="Move Up"
                     >
                         위로 이동
                     </button>
@@ -143,16 +130,13 @@ const PropertyPanel = ({ onSave }) => {
                         onClick={handleMoveDown}
                         disabled={selectedIndex === blocks.length - 1}
                         style={{ flex: 1, padding: '8px', cursor: selectedIndex === blocks.length - 1 ? 'not-allowed' : 'pointer', backgroundColor: 'white', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', opacity: selectedIndex === blocks.length - 1 ? 0.5 : 1 }}
-                        title="Move Down"
                     >
                         아래로 이동
                     </button>
                 </div>
                 <button
                     onClick={() => removeBlock(selectedBlock.id)}
-                    style={{ width: '100%', backgroundColor: '#fee2e2', color: 'var(--danger-color)', border: 'none', padding: '10px', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: '500', transition: 'background-color 0.2s' }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#fecaca'}
-                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fee2e2'}
+                    style={{ width: '100%', backgroundColor: '#fee2e2', color: 'var(--danger-color)', border: 'none', padding: '10px', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: '500' }}
                 >
                     블록 삭제
                 </button>

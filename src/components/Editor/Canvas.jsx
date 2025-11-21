@@ -5,10 +5,10 @@ import styles from './Canvas.module.css';
 
 const Canvas = () => {
   const { state, selectBlock } = useBlocks();
-  const { blocks, selectedBlockId } = state;
+  const { blocks, selectedBlockId, currentProject } = state;
 
   return (
-    <div className={styles.canvasContainer}>
+    <div className={styles.canvasContainer} style={{ backgroundColor: currentProject?.styles?.backgroundColor || '#ffffff' }}>
       {/* Mobile Status Bar Mockup */}
       <div className={styles.statusBar}>
         <span>9:41</span>

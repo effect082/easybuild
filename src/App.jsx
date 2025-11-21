@@ -1,18 +1,39 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import EditorLayout from './components/Layout/EditorLayout';
 import BlockLibrary from './components/Editor/BlockLibrary';
 import Canvas from './components/Editor/Canvas';
 import PropertyPanel from './components/Editor/PropertyPanel';
 import { useBlocks } from './context/BlockContext';
-import { createProject, saveProject } from './utils/projectStorage';
+import { createProject, saveProject, loadProject as loadProjectFromStorage } from './utils/projectStorage';
 
 const CreateProjectDialog = React.lazy(() => import('./components/CreateProjectDialog'));
 const ProjectList = React.lazy(() => import('./components/ProjectList'));
+const DeployDialog = React.lazy(() => import('./components/DeployDialog'));
 
 function App() {
   const [showCreateProject, setShowCreateProject] = useState(true);
   const [showProjectList, setShowProjectList] = useState(false);
+  const [showDeployDialog, setShowDeployDialog] = useState(false);
+  const [deployUrl, setDeployUrl] = useState('');
+  const [viewMode, setViewMode] = useState(false);
   const { state, loadProject, updateProjectInfo } = useBlocks();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get('project');
+    if (projectId) {
+      const project = loadProjectFromStorage(projectId);
+      if (project) {
+        loadProject(project);
+        setViewMode(true);
+        setShowCreateProject(false);
+      } else {
+        alert('Project not found');
+        // Remove query param if project not found
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  }, []);
 
   const handleCreateProject = (metadata) => {
     try {
@@ -26,6 +47,7 @@ function App() {
 
   const handleLoadProject = (project) => {
     loadProject(project);
+    setViewMode(false);
   };
 
   const handleSaveProject = () => {
@@ -46,6 +68,46 @@ function App() {
       alert('저장 중 오류가 발생했습니다: ' + err.message);
     }
   };
+
+  const handleDeploy = () => {
+    if (!state.currentProject) return;
+    handleSaveProject(); // Auto-save before deploy
+    const url = `${window.location.origin}${window.location.pathname}?project=${state.currentProject.id}`;
+    setDeployUrl(url);
+    setShowDeployDialog(true);
+  };
+
+  if (viewMode) {
+    return (
+      <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6', display: 'flex', justifyContent: 'center', padding: '20px' }}>
+        <div style={{ width: '100%', maxWidth: '480px', backgroundColor: 'white', boxShadow: '0 0 20px rgba(0,0,0,0.1)', minHeight: '100vh' }}>
+          <Canvas readOnly={true} />
+        </div>
+        <button
+          onClick={() => {
+            window.history.pushState({}, document.title, window.location.pathname);
+            setViewMode(false);
+            setShowCreateProject(true);
+          }}
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            padding: '12px 24px',
+            backgroundColor: '#4f46e5',
+            color: 'white',
+            border: 'none',
+            borderRadius: '30px',
+            cursor: 'pointer',
+            fontWeight: '600',
+            boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)'
+          }}
+        >
+          Create Your Own
+        </button>
+      </div>
+    );
+  }
 
   if (showCreateProject) {
     return (
@@ -88,6 +150,15 @@ function App() {
           <ProjectList
             onClose={() => setShowProjectList(false)}
             onLoadProject={handleLoadProject}
+          />
+        </Suspense>
+      )}
+
+      {showDeployDialog && (
+        <Suspense fallback={<div />}>
+          <DeployDialog
+            url={deployUrl}
+            onClose={() => setShowDeployDialog(false)}
           />
         </Suspense>
       )}
@@ -164,7 +235,7 @@ function App() {
         <EditorLayout
           leftPanel={<BlockLibrary />}
           centerPanel={<Canvas />}
-          rightPanel={<PropertyPanel onSave={handleSaveProject} />}
+          rightPanel={<PropertyPanel onSave={handleSaveProject} onDeploy={handleDeploy} />}
         />
       </div>
     </div>

@@ -98,6 +98,28 @@ const ImageEditor = ({ block, updateBlock }) => {
                 )}
             </div>
 
+            {/* Link URL Input */}
+            <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>
+                    링크 URL (선택사항)
+                </label>
+                <input
+                    type="text"
+                    value={block.content.link || ''}
+                    onChange={(e) => updateBlock(block.id, { content: { ...block.content, link: e.target.value } })}
+                    placeholder="https://example.com (이미지 클릭 시 이동)"
+                    style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: 'var(--radius-md)'
+                    }}
+                />
+                <p style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px' }}>
+                    이미지를 클릭했을 때 이동할 URL을 입력하세요
+                </p>
+            </div>
+
             {/* Image Preview */}
             {block.content.url && (
                 <div>

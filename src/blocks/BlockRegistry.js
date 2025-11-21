@@ -16,6 +16,10 @@ import HeaderBlock from './HeaderBlock';
 import HeaderEditor from '../components/Editor/PropertyEditors/HeaderEditor';
 import SocialMediaBlock from './SocialMediaBlock';
 import SocialMediaEditor from '../components/Editor/PropertyEditors/SocialMediaEditor';
+import SlideBlock from './SlideBlock';
+import SlideEditor from '../components/Editor/PropertyEditors/SlideEditor';
+import GalleryBlock from './GalleryBlock';
+import GalleryEditor from '../components/Editor/PropertyEditors/GalleryEditor';
 
 const BlockRegistry = {
     text: {
@@ -62,6 +66,16 @@ const BlockRegistry = {
         view: SocialMediaBlock,
         editor: SocialMediaEditor,
         label: '소셜미디어',
+    },
+    slide: {
+        view: SlideBlock,
+        editor: SlideEditor,
+        label: '슬라이드',
+    },
+    gallery: {
+        view: GalleryBlock,
+        editor: GalleryEditor,
+        label: '갤러리',
     },
 };
 

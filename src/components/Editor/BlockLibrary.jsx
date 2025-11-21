@@ -51,6 +51,8 @@ const BlockLibrary = () => {
                 <BlockButton type="header" label="헤드(제목)" />
                 <BlockButton type="text" label="텍스트" />
                 <BlockButton type="image" label="이미지" />
+                <BlockButton type="slide" label="슬라이드" />
+                <BlockButton type="gallery" label="갤러리" />
                 <BlockButton type="video" label="영상" />
                 <BlockButton type="businessInfo" label="사업안내" />
                 <BlockButton type="date" label="일정" />

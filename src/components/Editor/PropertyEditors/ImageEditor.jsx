@@ -129,9 +129,19 @@ const ImageEditor = ({ block, updateBlock }) => {
                             />
                         ) : (
                             <div style={{ color: '#ef4444' }}>
-                                <p style={{ margin: '0 0 8px 0', fontSize: '1.5rem' }}>⚠️</p>
-                                <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: '600' }}>이미지를 불러올 수 없습니다</p>
-                                <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem' }}>URL이 정확한지 확인해주세요.</p>
+                                {helperMessage ? (
+                                    <div style={{ color: '#f59e0b' }}>
+                                        <p style={{ margin: '0 0 8px 0', fontSize: '1.5rem' }}>💡</p>
+                                        <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: '600' }}>이미지 주소가 아닙니다</p>
+                                        <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem' }}>위의 팁을 참고하여 이미지 주소를 복사해주세요.</p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <p style={{ margin: '0 0 8px 0', fontSize: '1.5rem' }}>⚠️</p>
+                                        <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: '600' }}>이미지를 불러올 수 없습니다</p>
+                                        <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem' }}>URL이 정확한지 확인해주세요.</p>
+                                    </>
+                                )}
                             </div>
                         )}
                     </div>

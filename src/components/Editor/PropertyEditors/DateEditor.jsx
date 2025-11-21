@@ -1,5 +1,85 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+
+const ScheduleItem = ({ item, index, onChange, onRemove }) => {
+    const [label, setLabel] = useState(item.label);
+    const [value, setValue] = useState(item.value);
+
+    useEffect(() => {
+        setLabel(item.label);
+        setValue(item.value);
+    }, [item.label, item.value]);
+
+    const handleBlur = () => {
+        if (label !== item.label || value !== item.value) {
+            onChange(index, { label, value, type: 'datetime' });
+        }
+    };
+
+    return (
+        <div style={{
+            padding: '16px',
+            backgroundColor: '#f9fafb',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--border-color)'
+        }}>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', alignItems: 'center' }}>
+                <input
+                    type="text"
+                    placeholder="라벨 (예: 일시)"
+                    value={label}
+                    onChange={(e) => setLabel(e.target.value)}
+                    onBlur={handleBlur}
+                    style={{
+                        flex: 1,
+                        padding: '8px',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: 'var(--radius-sm)',
+                        fontSize: '0.9rem',
+                        fontWeight: '600'
+                    }}
+                />
+                <button
+                    onClick={() => onRemove(index)}
+                    style={{
+                        padding: '8px 12px',
+                        backgroundColor: '#fee2e2',
+                        color: '#ef4444',
+                        border: 'none',
+                        borderRadius: 'var(--radius-sm)',
+                        cursor: 'pointer',
+                        fontSize: '1.1rem',
+                        lineHeight: 1
+                    }}
+                    title="삭제"
+                >
+                    ×
+                </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <input
+                    type="text"
+                    value={value}
+                    placeholder="YYYY-MM-DD HH:mm (예: 2025-11-21 14:00)"
+                    onChange={(e) => setValue(e.target.value)}
+                    onBlur={handleBlur}
+                    style={{
+                        width: '100%',
+                        padding: '10px',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: 'var(--radius-sm)',
+                        fontSize: '0.9rem',
+                        fontFamily: 'inherit'
+                    }}
+                />
+                <span style={{ fontSize: '0.75rem', color: '#666' }}>
+                    * 날짜와 시간을 직접 입력해주세요 (자동 저장됨)
+                </span>
+            </div>
+        </div>
+    );
+};
 
 const DateEditor = ({ block, updateBlock }) => {
     const handleChange = (key, value) => {
@@ -14,9 +94,9 @@ const DateEditor = ({ block, updateBlock }) => {
         updateBlock(block.id, { content: { ...block.content, scheduleItems: newItems } });
     };
 
-    const handleItemChange = (index, key, value) => {
+    const handleItemUpdate = (index, newItem) => {
         const newItems = [...(block.content.scheduleItems || [])];
-        newItems[index] = { ...newItems[index], [key]: value };
+        newItems[index] = { ...newItems[index], ...newItem };
         updateBlock(block.id, { content: { ...block.content, scheduleItems: newItems } });
     };
 
@@ -54,68 +134,13 @@ const DateEditor = ({ block, updateBlock }) => {
                 </label>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {(block.content.scheduleItems || []).map((item, index) => (
-                        <div key={item.id || index} style={{
-                            padding: '16px',
-                            backgroundColor: '#f9fafb',
-                            borderRadius: 'var(--radius-md)',
-                            border: '1px solid var(--border-color)'
-                        }}>
-                            <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', alignItems: 'center' }}>
-                                <input
-                                    type="text"
-                                    placeholder="라벨 (예: 일시)"
-                                    value={item.label}
-                                    onChange={(e) => handleItemChange(index, 'label', e.target.value)}
-                                    style={{
-                                        flex: 1,
-                                        padding: '8px',
-                                        border: '1px solid var(--border-color)',
-                                        borderRadius: 'var(--radius-sm)',
-                                        fontSize: '0.9rem',
-                                        fontWeight: '600'
-                                    }}
-                                />
-                                <button
-                                    onClick={() => handleRemoveItem(index)}
-                                    style={{
-                                        padding: '8px 12px',
-                                        backgroundColor: '#fee2e2',
-                                        color: '#ef4444',
-                                        border: 'none',
-                                        borderRadius: 'var(--radius-sm)',
-                                        cursor: 'pointer',
-                                        fontSize: '1.1rem',
-                                        lineHeight: 1
-                                    }}
-                                    title="삭제"
-                                >
-                                    ×
-                                </button>
-                            </div>
-
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <input
-                                    type="text"
-                                    value={item.value}
-                                    placeholder="YYYY-MM-DD HH:mm (예: 2025-11-21 14:00)"
-                                    onChange={(e) => {
-                                        handleItemChange(index, 'value', e.target.value);
-                                        handleItemChange(index, 'type', 'datetime');
-                                    }}
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px',
-                                        border: '1px solid var(--border-color)',
-                                        borderRadius: 'var(--radius-sm)',
-                                        fontSize: '0.9rem',
-                                        fontFamily: 'inherit'
-                                    }}
-                                />
-                                <span style={{ fontSize: '0.75rem', color: '#666' }}>
-                                    * 날짜와 시간을 직접 입력해주세요 (자동 저장됨)
-                                </span>
-                            </div>
-                        </div>
+                        <ScheduleItem
+                            key={item.id || index}
+                            item={item}
+                            index={index}
+                            onChange={handleItemUpdate}
+                            onRemove={handleRemoveItem}
+                        />
                     ))}
 
                     <button

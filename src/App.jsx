@@ -101,8 +101,10 @@ function App() {
       const baseUrl = `${window.location.origin}${window.location.pathname}`;
       const projectUrl = `${baseUrl}?project=${projectId}`;
 
-      // Direct UUID URL without shortener
-      setDeployUrl(projectUrl);
+      // Shorten with is.gd for very short URLs (~20 chars)
+      const shortUrl = await shortenUrl(projectUrl);
+
+      setDeployUrl(shortUrl);
       setShowDeployDialog(true);
     } catch (error) {
       console.error('Deploy error:', error);

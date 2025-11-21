@@ -1,90 +1,155 @@
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const DateEditor = ({ block, updateBlock }) => {
     const handleChange = (key, value) => {
         updateBlock(block.id, { content: { ...block.content, [key]: value } });
     };
 
-    const handleAddCustomField = () => {
-        const newFields = [...(block.content.customFields || []), { label: '', value: '' }];
-        updateBlock(block.id, { content: { ...block.content, customFields: newFields } });
+    const handleAddItem = () => {
+        const newItems = [
+            ...(block.content.scheduleItems || []),
+            { id: uuidv4(), label: '새 항목', value: '', type: 'text' }
+        ];
+        updateBlock(block.id, { content: { ...block.content, scheduleItems: newItems } });
     };
 
-    const handleCustomFieldChange = (index, key, value) => {
-        const newFields = [...(block.content.customFields || [])];
-        newFields[index] = { ...newFields[index], [key]: value };
-        updateBlock(block.id, { content: { ...block.content, customFields: newFields } });
+    const handleItemChange = (index, key, value) => {
+        const newItems = [...(block.content.scheduleItems || [])];
+        newItems[index] = { ...newItems[index], [key]: value };
+        updateBlock(block.id, { content: { ...block.content, scheduleItems: newItems } });
     };
 
-    const handleRemoveCustomField = (index) => {
-        const newFields = [...(block.content.customFields || [])];
-        newFields.splice(index, 1);
-        updateBlock(block.id, { content: { ...block.content, customFields: newFields } });
+    const handleRemoveItem = (index) => {
+        const newItems = [...(block.content.scheduleItems || [])];
+        newItems.splice(index, 1);
+        updateBlock(block.id, { content: { ...block.content, scheduleItems: newItems } });
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.9rem', fontWeight: '500' }}>
-                Event Title:
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {/* Title */}
+            <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>
+                    일정 제목
+                </label>
                 <input
                     type="text"
                     value={block.content.title || ''}
                     onChange={(e) => handleChange('title', e.target.value)}
-                    style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
-                    placeholder="e.g., Wedding Ceremony"
+                    placeholder="예: 결혼식, 돌잔치, 모임"
+                    style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: 'var(--radius-md)'
+                    }}
                 />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.9rem', fontWeight: '500' }}>
-                Start Date & Time:
-                <input
-                    type="datetime-local"
-                    value={block.content.startDate || ''}
-                    onChange={(e) => handleChange('startDate', e.target.value)}
-                    style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
-                />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.9rem', fontWeight: '500' }}>
-                End Date & Time:
-                <input
-                    type="datetime-local"
-                    value={block.content.endDate || ''}
-                    onChange={(e) => handleChange('endDate', e.target.value)}
-                    style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
-                />
-            </label>
+            </div>
 
-            <div style={{ borderTop: '1px solid #eee', paddingTop: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600' }}>Custom Fields</label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    {(block.content.customFields || []).map((field, index) => (
-                        <div key={index} style={{ display: 'flex', gap: '5px' }}>
-                            <input
-                                type="text"
-                                placeholder="Label"
-                                value={field.label}
-                                onChange={(e) => handleCustomFieldChange(index, 'label', e.target.value)}
-                                style={{ flex: 1, padding: '6px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '0.85rem' }}
-                            />
-                            <input
-                                type="text"
-                                placeholder="Value"
-                                value={field.value}
-                                onChange={(e) => handleCustomFieldChange(index, 'value', e.target.value)}
-                                style={{ flex: 1, padding: '6px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '0.85rem' }}
-                            />
-                            <button
-                                onClick={() => handleRemoveCustomField(index)}
-                                style={{ padding: '0 8px', backgroundColor: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                            >
-                                ×
-                            </button>
+            {/* Schedule Items */}
+            <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>
+                    상세 항목
+                </label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {(block.content.scheduleItems || []).map((item, index) => (
+                        <div key={item.id || index} style={{
+                            padding: '12px',
+                            backgroundColor: '#f9fafb',
+                            borderRadius: 'var(--radius-md)',
+                            border: '1px solid var(--border-color)'
+                        }}>
+                            <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                                <input
+                                    type="text"
+                                    placeholder="라벨 (예: 일시)"
+                                    value={item.label}
+                                    onChange={(e) => handleItemChange(index, 'label', e.target.value)}
+                                    style={{
+                                        flex: 1,
+                                        padding: '6px',
+                                        border: '1px solid var(--border-color)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        fontSize: '0.9rem'
+                                    }}
+                                />
+                                <select
+                                    value={item.type}
+                                    onChange={(e) => handleItemChange(index, 'type', e.target.value)}
+                                    style={{
+                                        padding: '6px',
+                                        border: '1px solid var(--border-color)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        fontSize: '0.9rem',
+                                        backgroundColor: 'white'
+                                    }}
+                                >
+                                    <option value="text">텍스트</option>
+                                    <option value="datetime">날짜/시간</option>
+                                </select>
+                                <button
+                                    onClick={() => handleRemoveItem(index)}
+                                    style={{
+                                        padding: '6px 10px',
+                                        backgroundColor: '#fee2e2',
+                                        color: '#ef4444',
+                                        border: 'none',
+                                        borderRadius: 'var(--radius-sm)',
+                                        cursor: 'pointer'
+                                    }}
+                                    title="삭제"
+                                >
+                                    ×
+                                </button>
+                            </div>
+
+                            {item.type === 'datetime' ? (
+                                <input
+                                    type="datetime-local"
+                                    value={item.value}
+                                    onChange={(e) => handleItemChange(index, 'value', e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        padding: '8px',
+                                        border: '1px solid var(--border-color)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        fontSize: '0.9rem'
+                                    }}
+                                />
+                            ) : (
+                                <input
+                                    type="text"
+                                    placeholder="내용 입력"
+                                    value={item.value}
+                                    onChange={(e) => handleItemChange(index, 'value', e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        padding: '8px',
+                                        border: '1px solid var(--border-color)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        fontSize: '0.9rem'
+                                    }}
+                                />
+                            )}
                         </div>
                     ))}
+
                     <button
-                        onClick={handleAddCustomField}
-                        style={{ padding: '8px', backgroundColor: '#f3f4f6', color: '#374151', border: '1px dashed #d1d5db', borderRadius: '4px', cursor: 'pointer', fontSize: '0.85rem', marginTop: '5px' }}
+                        onClick={handleAddItem}
+                        style={{
+                            width: '100%',
+                            padding: '10px',
+                            backgroundColor: 'white',
+                            border: '1px dashed var(--primary-color)',
+                            color: 'var(--primary-color)',
+                            borderRadius: 'var(--radius-md)',
+                            cursor: 'pointer',
+                            fontWeight: '600',
+                            marginTop: '4px'
+                        }}
                     >
-                        + Add Field
+                        + 항목 추가하기
                     </button>
                 </div>
             </div>

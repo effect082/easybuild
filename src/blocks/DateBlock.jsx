@@ -1,42 +1,65 @@
 import React from 'react';
 
 const DateBlock = ({ content, style }) => {
-    const { startDate, endDate, title, customFields = [] } = content;
+    const { title, scheduleItems = [] } = content;
 
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
-        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        // Check if valid date
+        if (isNaN(date.getTime())) return dateString;
+
+        return date.toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'short',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     };
 
     return (
-        <div style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px', textAlign: 'center', ...style }}>
-            {title && <h3 style={{ margin: '0 0 15px 0', fontSize: '1.2rem' }}>{title}</h3>}
+        <div style={{ padding: '24px', backgroundColor: '#f8f9fa', borderRadius: '12px', textAlign: 'center', ...style }}>
+            {title && <h3 style={{ margin: '0 0 20px 0', fontSize: '1.3rem', color: '#1f2937' }}>{title}</h3>}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: customFields.length > 0 ? '15px' : '0' }}>
-                <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#333' }}>
-                    {startDate ? formatDate(startDate) : 'Start Date'}
-                </div>
-                {endDate && (
-                    <>
-                        <div style={{ color: '#666', fontSize: '0.9rem' }}>↓</div>
-                        <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#333' }}>
-                            {formatDate(endDate)}
-                        </div>
-                    </>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {scheduleItems.map((item, index) => (
+                    <div key={index} style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '12px',
+                        backgroundColor: 'white',
+                        borderRadius: '8px',
+                        border: '1px solid #e5e7eb'
+                    }}>
+                        <span style={{
+                            color: '#6b7280',
+                            fontWeight: '600',
+                            fontSize: '0.95rem',
+                            minWidth: '60px',
+                            textAlign: 'left'
+                        }}>
+                            {item.label}
+                        </span>
+                        <span style={{
+                            fontWeight: '600',
+                            color: '#111827',
+                            fontSize: '1rem',
+                            textAlign: 'right'
+                        }}>
+                            {item.type === 'datetime' ? formatDate(item.value) : item.value}
+                        </span>
+                    </div>
+                ))}
+
+                {scheduleItems.length === 0 && (
+                    <div style={{ color: '#9ca3af', fontSize: '0.9rem', fontStyle: 'italic' }}>
+                        일정 항목을 추가해주세요
+                    </div>
                 )}
             </div>
-
-            {customFields.length > 0 && (
-                <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '15px', marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {customFields.map((field, index) => (
-                        <div key={index} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                            <span style={{ color: '#666', fontWeight: '500' }}>{field.label}</span>
-                            <span style={{ fontWeight: '600' }}>{field.value}</span>
-                        </div>
-                    ))}
-                </div>
-            )}
         </div>
     );
 };

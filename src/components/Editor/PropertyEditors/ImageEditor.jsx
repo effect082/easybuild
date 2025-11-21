@@ -1,6 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ImageEditor = ({ block, updateBlock }) => {
+    const [imgError, setImgError] = useState(false);
+    const [helperMessage, setHelperMessage] = useState('');
+
+    useEffect(() => {
+        setImgError(false);
+        const url = block.content.url;
+        if (url) {
+            if (url.includes('imgur.com') && !url.includes('i.imgur.com') && !url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+                setHelperMessage('팁: Imgur 페이지 주소입니다. 이미지를 우클릭하여 "이미지 주소 복사"를 선택한 후 붙여넣으세요.');
+            } else if (url.includes('google.com/imgres')) {
+                setHelperMessage('팁: 구글 검색 결과 페이지입니다. "이미지 주소 복사"를 사용하세요.');
+            } else {
+                setHelperMessage('');
+            }
+        } else {
+            setHelperMessage('');
+        }
+    }, [block.content.url]);
+
     const handleUrlChange = (value) => {
         updateBlock(block.id, { content: { ...block.content, url: value } });
     };
@@ -58,9 +77,15 @@ const ImageEditor = ({ block, updateBlock }) => {
                         width: '100%',
                         padding: '8px',
                         border: '1px solid var(--border-color)',
-                        borderRadius: 'var(--radius-md)'
+                        borderRadius: 'var(--radius-md)',
+                        borderColor: imgError ? '#ef4444' : 'var(--border-color)'
                     }}
                 />
+                {helperMessage && (
+                    <p style={{ fontSize: '0.8rem', color: '#f59e0b', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        💡 {helperMessage}
+                    </p>
+                )}
             </div>
 
             {/* Image Preview */}
@@ -70,21 +95,35 @@ const ImageEditor = ({ block, updateBlock }) => {
                         미리보기
                     </label>
                     <div style={{
-                        border: '1px solid var(--border-color)',
+                        border: `1px solid ${imgError ? '#ef4444' : 'var(--border-color)'}`,
                         borderRadius: 'var(--radius-md)',
                         padding: '10px',
                         backgroundColor: '#f9fafb',
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        minHeight: '100px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'column'
                     }}>
-                        <img
-                            src={block.content.url}
-                            alt="Preview"
-                            style={{
-                                maxWidth: '100%',
-                                maxHeight: '200px',
-                                borderRadius: 'var(--radius-md)'
-                            }}
-                        />
+                        {!imgError ? (
+                            <img
+                                src={block.content.url}
+                                alt="Preview"
+                                onError={() => setImgError(true)}
+                                style={{
+                                    maxWidth: '100%',
+                                    maxHeight: '200px',
+                                    borderRadius: 'var(--radius-md)'
+                                }}
+                            />
+                        ) : (
+                            <div style={{ color: '#ef4444' }}>
+                                <p style={{ margin: '0 0 8px 0', fontSize: '1.5rem' }}>⚠️</p>
+                                <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: '600' }}>이미지를 불러올 수 없습니다</p>
+                                <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem' }}>URL이 정확한지 확인해주세요.</p>
+                            </div>
+                        )}
                     </div>
                     {/* Delete Button */}
                     <button

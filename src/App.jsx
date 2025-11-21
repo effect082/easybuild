@@ -96,13 +96,13 @@ function App() {
     handleSaveProject(); // Auto-save before deploy
 
     try {
-      // 1. Compress project data with LZ-String
-      const encodedData = encodeProjectForUrl(state.currentProject);
-      const longUrl = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
+      // Use UUID-based URL (naturally short, ~90 chars)
+      const projectId = state.currentProject.id;
+      const baseUrl = `${window.location.origin}${window.location.pathname}`;
+      const projectUrl = `${baseUrl}?project=${projectId}`;
 
-      // 2. Shorten URL using TinyURL for maximum reduction
-      // This reduces URLs from ~800 chars to ~20 chars!
-      const shortUrl = await shortenUrl(longUrl);
+      // Optional: Shorten further with is.gd (~20 chars)
+      const shortUrl = await shortenUrl(projectUrl);
 
       setDeployUrl(shortUrl);
       setShowDeployDialog(true);

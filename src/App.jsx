@@ -6,7 +6,7 @@ import Canvas from './components/Editor/Canvas';
 import PropertyPanel from './components/Editor/PropertyPanel';
 import { useBlocks } from './context/BlockContext';
 import { createProject, saveProject, loadProject as loadProjectFromStorage } from './utils/projectStorage';
-import { decodeProjectFromUrl } from './utils/urlSharing';
+import { encodeProjectForUrl, decodeProjectFromUrl } from './utils/urlSharing';
 import { updateMetaTags } from './utils/metaTags';
 
 const CreateProjectDialog = React.lazy(() => import('./components/CreateProjectDialog'));

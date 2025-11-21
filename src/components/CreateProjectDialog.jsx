@@ -6,6 +6,7 @@ const CreateProjectDialog = ({ onClose, onCreate }) => {
     const [type, setType] = useState('뉴스레터');
     const [author, setAuthor] = useState('');
     const [password, setPassword] = useState('');
+    const [category, setCategory] = useState('personal'); // 'personal' or 'team'
     const [error, setError] = useState('');
 
     const handleCreate = () => {
@@ -38,6 +39,7 @@ const CreateProjectDialog = ({ onClose, onCreate }) => {
             type,
             author: author.trim(),
             password,
+            category,
             template
         });
     };
@@ -63,7 +65,7 @@ const CreateProjectDialog = ({ onClose, onCreate }) => {
                 maxWidth: '400px',
                 boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
             }}>
-                <h2 style={{ margin: '0 0 24px 0', fontSize: '1.5rem', fontWeight: '700' }}>
+                <h2 style={{ margin: '0 0 24px 0', fontSize: '1.5rem', fontWeight: '700', textAlign: 'center' }}>
                     새 프로젝트 만들기
                 </h2>
 
@@ -85,6 +87,47 @@ const CreateProjectDialog = ({ onClose, onCreate }) => {
                             fontSize: '1rem'
                         }}
                     />
+                </div>
+
+                {/* Category */}
+                <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>
+                        분류
+                    </label>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <button
+                            type="button"
+                            onClick={() => setCategory('personal')}
+                            style={{
+                                flex: 1,
+                                padding: '10px',
+                                border: `1px solid ${category === 'personal' ? 'var(--primary-color)' : 'var(--border-color)'}`,
+                                backgroundColor: category === 'personal' ? '#eff6ff' : 'white',
+                                color: category === 'personal' ? 'var(--primary-color)' : '#666',
+                                borderRadius: 'var(--radius-md)',
+                                cursor: 'pointer',
+                                fontWeight: '600'
+                            }}
+                        >
+                            개인
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setCategory('team')}
+                            style={{
+                                flex: 1,
+                                padding: '10px',
+                                border: `1px solid ${category === 'team' ? 'var(--primary-color)' : 'var(--border-color)'}`,
+                                backgroundColor: category === 'team' ? '#eff6ff' : 'white',
+                                color: category === 'team' ? 'var(--primary-color)' : '#666',
+                                borderRadius: 'var(--radius-md)',
+                                cursor: 'pointer',
+                                fontWeight: '600'
+                            }}
+                        >
+                            팀
+                        </button>
+                    </div>
                 </div>
 
                 {/* Type */}

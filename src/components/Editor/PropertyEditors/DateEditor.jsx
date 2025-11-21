@@ -55,12 +55,12 @@ const DateEditor = ({ block, updateBlock }) => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {(block.content.scheduleItems || []).map((item, index) => (
                         <div key={item.id || index} style={{
-                            padding: '12px',
+                            padding: '16px',
                             backgroundColor: '#f9fafb',
                             borderRadius: 'var(--radius-md)',
                             border: '1px solid var(--border-color)'
                         }}>
-                            <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                            <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', alignItems: 'center' }}>
                                 <input
                                     type="text"
                                     placeholder="라벨 (예: 일시)"
@@ -68,21 +68,23 @@ const DateEditor = ({ block, updateBlock }) => {
                                     onChange={(e) => handleItemChange(index, 'label', e.target.value)}
                                     style={{
                                         flex: 1,
-                                        padding: '6px',
+                                        padding: '8px',
                                         border: '1px solid var(--border-color)',
                                         borderRadius: 'var(--radius-sm)',
-                                        fontSize: '0.9rem'
+                                        fontSize: '0.9rem',
+                                        fontWeight: '600'
                                     }}
                                 />
                                 <select
                                     value={item.type}
                                     onChange={(e) => handleItemChange(index, 'type', e.target.value)}
                                     style={{
-                                        padding: '6px',
+                                        padding: '8px',
                                         border: '1px solid var(--border-color)',
                                         borderRadius: 'var(--radius-sm)',
                                         fontSize: '0.9rem',
-                                        backgroundColor: 'white'
+                                        backgroundColor: 'white',
+                                        cursor: 'pointer'
                                     }}
                                 >
                                     <option value="text">텍스트</option>
@@ -91,12 +93,14 @@ const DateEditor = ({ block, updateBlock }) => {
                                 <button
                                     onClick={() => handleRemoveItem(index)}
                                     style={{
-                                        padding: '6px 10px',
+                                        padding: '8px 12px',
                                         backgroundColor: '#fee2e2',
                                         color: '#ef4444',
                                         border: 'none',
                                         borderRadius: 'var(--radius-sm)',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        fontSize: '1.1rem',
+                                        lineHeight: 1
                                     }}
                                     title="삭제"
                                 >
@@ -104,34 +108,42 @@ const DateEditor = ({ block, updateBlock }) => {
                                 </button>
                             </div>
 
-                            {item.type === 'datetime' ? (
-                                <input
-                                    type="datetime-local"
-                                    value={item.value}
-                                    onChange={(e) => handleItemChange(index, 'value', e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        padding: '8px',
-                                        border: '1px solid var(--border-color)',
-                                        borderRadius: 'var(--radius-sm)',
-                                        fontSize: '0.9rem'
-                                    }}
-                                />
-                            ) : (
-                                <input
-                                    type="text"
-                                    placeholder="내용 입력"
-                                    value={item.value}
-                                    onChange={(e) => handleItemChange(index, 'value', e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        padding: '8px',
-                                        border: '1px solid var(--border-color)',
-                                        borderRadius: 'var(--radius-sm)',
-                                        fontSize: '0.9rem'
-                                    }}
-                                />
-                            )}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                {item.type === 'datetime' ? (
+                                    <>
+                                        <input
+                                            type="datetime-local"
+                                            value={item.value}
+                                            onChange={(e) => handleItemChange(index, 'value', e.target.value)}
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px',
+                                                border: '1px solid var(--border-color)',
+                                                borderRadius: 'var(--radius-sm)',
+                                                fontSize: '0.9rem',
+                                                fontFamily: 'inherit'
+                                            }}
+                                        />
+                                        <span style={{ fontSize: '0.75rem', color: '#666' }}>
+                                            * 날짜와 시간을 선택해주세요
+                                        </span>
+                                    </>
+                                ) : (
+                                    <input
+                                        type="text"
+                                        placeholder="내용을 입력하세요"
+                                        value={item.value}
+                                        onChange={(e) => handleItemChange(index, 'value', e.target.value)}
+                                        style={{
+                                            width: '100%',
+                                            padding: '10px',
+                                            border: '1px solid var(--border-color)',
+                                            borderRadius: 'var(--radius-sm)',
+                                            fontSize: '0.9rem'
+                                        }}
+                                    />
+                                )}
+                            </div>
                         </div>
                     ))}
 

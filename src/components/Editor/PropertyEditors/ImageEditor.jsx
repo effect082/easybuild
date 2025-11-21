@@ -4,13 +4,22 @@ const ImageEditor = ({ block, updateBlock }) => {
     const [imgError, setImgError] = useState(false);
     const [helperMessage, setHelperMessage] = useState('');
 
+    const convertImgurUrl = (url) => {
+        if (!url) return url;
+        // Convert https://imgur.com/XXXXX to https://i.imgur.com/XXXXX.png
+        // But ignore if it's already i.imgur.com or has an extension
+        if (url.includes('imgur.com') && !url.includes('i.imgur.com') && !url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+            const id = url.split('/').pop();
+            return `https://i.imgur.com/${id}.png`;
+        }
+        return url;
+    };
+
     useEffect(() => {
         setImgError(false);
         const url = block.content.url;
         if (url) {
-            if (url.includes('imgur.com') && !url.includes('i.imgur.com') && !url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-                setHelperMessage('팁: Imgur 페이지 주소입니다. 이미지를 우클릭하여 "이미지 주소 복사"를 선택한 후 붙여넣으세요.');
-            } else if (url.includes('google.com/imgres')) {
+            if (url.includes('google.com/imgres')) {
                 setHelperMessage('팁: 구글 검색 결과 페이지입니다. "이미지 주소 복사"를 사용하세요.');
             } else {
                 setHelperMessage('');
@@ -21,7 +30,8 @@ const ImageEditor = ({ block, updateBlock }) => {
     }, [block.content.url]);
 
     const handleUrlChange = (value) => {
-        updateBlock(block.id, { content: { ...block.content, url: value } });
+        const convertedUrl = convertImgurUrl(value);
+        updateBlock(block.id, { content: { ...block.content, url: convertedUrl } });
     };
 
     const handleFileUpload = (e) => {

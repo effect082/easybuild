@@ -124,19 +124,21 @@ export const BlockProvider = ({ children }) => {
         dispatch({ type: 'CLEAR_PROJECT' });
     };
 
+    const value = React.useMemo(() => ({
+        state,
+        addBlock,
+        updateBlock,
+        removeBlock,
+        selectBlock,
+        reorderBlocks,
+        loadTemplate,
+        loadProject,
+        updateProjectInfo,
+        clearProject
+    }), [state]);
+
     return (
-        <BlockContext.Provider value={{
-            state,
-            addBlock,
-            updateBlock,
-            removeBlock,
-            selectBlock,
-            reorderBlocks,
-            loadTemplate,
-            loadProject,
-            updateProjectInfo,
-            clearProject
-        }}>
+        <BlockContext.Provider value={value}>
             {children}
         </BlockContext.Provider>
     );

@@ -5,6 +5,7 @@ import './styles/variables.css'
 import App from './App.jsx'
 import { BlockProvider } from './context/BlockContext.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ErrorBoundary>

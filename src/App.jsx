@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import EditorLayout from './components/Layout/EditorLayout';
 import BlockLibrary from './components/Editor/BlockLibrary';
 import Canvas from './components/Editor/Canvas';
 import PropertyPanel from './components/Editor/PropertyPanel';
-import CreateProjectDialog from './components/CreateProjectDialog';
-import ProjectList from './components/ProjectList';
 import { useBlocks } from './context/BlockContext';
 import { createProject, saveProject } from './utils/projectStorage';
+
+const CreateProjectDialog = React.lazy(() => import('./components/CreateProjectDialog'));
+const ProjectList = React.lazy(() => import('./components/ProjectList'));
 
 function App() {
   const [showCreateProject, setShowCreateProject] = useState(true);
@@ -49,10 +50,12 @@ function App() {
   if (showCreateProject) {
     return (
       <div>
-        <CreateProjectDialog
-          onClose={() => {/* Can't close on first time */ }}
-          onCreate={handleCreateProject}
-        />
+        <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>}>
+          <CreateProjectDialog
+            onClose={() => {/* Can't close on first time */ }}
+            onCreate={handleCreateProject}
+          />
+        </Suspense>
         {state.currentProject && (
           <button
             onClick={() => setShowProjectList(true)}
@@ -81,10 +84,12 @@ function App() {
   return (
     <div style={{ padding: 0 }}>
       {showProjectList && (
-        <ProjectList
-          onClose={() => setShowProjectList(false)}
-          onLoadProject={handleLoadProject}
-        />
+        <Suspense fallback={<div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 2000 }} />}>
+          <ProjectList
+            onClose={() => setShowProjectList(false)}
+            onLoadProject={handleLoadProject}
+          />
+        </Suspense>
       )}
 
       {/* Top Bar with Project Info */}

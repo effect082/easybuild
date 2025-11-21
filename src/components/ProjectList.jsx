@@ -35,7 +35,8 @@ const ProjectList = ({ onClose, onLoadProject, onCreateNew }) => {
 
     const filteredProjects = projects.filter(p => {
         if (filter === 'all') return true;
-        return p.category === filter;
+        const category = p.category || 'personal'; // Default to personal if undefined
+        return category === filter;
     });
 
     return (

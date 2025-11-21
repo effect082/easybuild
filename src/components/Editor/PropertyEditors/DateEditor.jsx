@@ -94,42 +94,25 @@ const DateEditor = ({ block, updateBlock }) => {
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                    <input
-                                        type="datetime-local"
-                                        value={item.value}
-                                        onChange={(e) => {
-                                            handleItemChange(index, 'value', e.target.value);
-                                            handleItemChange(index, 'type', 'datetime');
-                                        }}
-                                        style={{
-                                            flex: 1,
-                                            padding: '10px',
-                                            border: '1px solid var(--border-color)',
-                                            borderRadius: 'var(--radius-sm)',
-                                            fontSize: '0.9rem',
-                                            fontFamily: 'inherit'
-                                        }}
-                                    />
-                                    <button
-                                        onClick={() => alert('저장되었습니다.')}
-                                        style={{
-                                            padding: '10px 16px',
-                                            backgroundColor: '#4f46e5',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: 'var(--radius-sm)',
-                                            cursor: 'pointer',
-                                            fontSize: '0.9rem',
-                                            fontWeight: '600',
-                                            whiteSpace: 'nowrap'
-                                        }}
-                                    >
-                                        저장
-                                    </button>
-                                </div>
+                                <input
+                                    type="text"
+                                    value={item.value}
+                                    placeholder="YYYY-MM-DD HH:mm (예: 2025-11-21 14:00)"
+                                    onChange={(e) => {
+                                        handleItemChange(index, 'value', e.target.value);
+                                        handleItemChange(index, 'type', 'datetime');
+                                    }}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        border: '1px solid var(--border-color)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        fontSize: '0.9rem',
+                                        fontFamily: 'inherit'
+                                    }}
+                                />
                                 <span style={{ fontSize: '0.75rem', color: '#666' }}>
-                                    * 날짜와 시간을 선택하고 저장 버튼을 눌러주세요
+                                    * 날짜와 시간을 직접 입력해주세요 (자동 저장됨)
                                 </span>
                             </div>
                         </div>

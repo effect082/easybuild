@@ -1,17 +1,18 @@
 /**
  * URL Shortener Service
- * Uses free TinyURL API to create short URLs
+ * Uses is.gd API for direct URL shortening without preview pages
  */
 
 /**
- * Shorten a long URL using TinyURL API
+ * Shorten a long URL using is.gd API
+ * is.gd provides DIRECT redirects without preview pages (unlike TinyURL)
  * @param {string} longUrl - The long URL to shorten
  * @returns {Promise<string>} - The shortened URL
  */
 export const shortenUrl = async (longUrl) => {
     try {
-        // TinyURL API endpoint (free, no API key needed)
-        const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
+        // is.gd API endpoint (free, no API key, DIRECT redirects)
+        const apiUrl = `https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`;
 
         const response = await fetch(apiUrl, {
             method: 'GET',
@@ -41,11 +42,11 @@ export const shortenUrl = async (longUrl) => {
 };
 
 /**
- * Alternative: is.gd URL shortener (backup option)
+ * Alternative: v.gd URL shortener (backup option, same service as is.gd)
  */
-export const shortenUrlIsGd = async (longUrl) => {
+export const shortenUrlVgd = async (longUrl) => {
     try {
-        const apiUrl = `https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`;
+        const apiUrl = `https://v.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`;
 
         const response = await fetch(apiUrl);
 
@@ -61,7 +62,7 @@ export const shortenUrlIsGd = async (longUrl) => {
 
         return shortUrl.trim();
     } catch (error) {
-        console.error('is.gd URL shortening failed:', error);
+        console.error('v.gd URL shortening failed:', error);
         return longUrl;
     }
 };

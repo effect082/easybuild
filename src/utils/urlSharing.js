@@ -1,11 +1,12 @@
-import pako from 'pako';
-
 /**
  * Encode project data into a URL-safe string
  * Uses compression to reduce URL length
  */
-export const encodeProjectForUrl = (project) => {
+export const encodeProjectForUrl = async (project) => {
     try {
+        // Dynamically import pako to ensure it works in production
+        const pako = await import('pako');
+
         // Create a minimal version of project data (exclude password hash for security)
         const minimalProject = {
             id: project.id,
@@ -38,8 +39,11 @@ export const encodeProjectForUrl = (project) => {
 /**
  * Decode project data from URL parameter
  */
-export const decodeProjectFromUrl = (encodedData) => {
+export const decodeProjectFromUrl = async (encodedData) => {
     try {
+        // Dynamically import pako to ensure it works in production
+        const pako = await import('pako');
+
         // Restore base64 characters
         let base64 = encodedData.replace(/-/g, '+').replace(/_/g, '/');
 

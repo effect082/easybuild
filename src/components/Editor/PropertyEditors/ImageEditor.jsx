@@ -19,8 +19,8 @@ const ImageEditor = ({ block, updateBlock }) => {
         setImgError(false);
         const url = block.content.url;
         if (url) {
-            if (url.includes('google.com/imgres')) {
-                setHelperMessage('팁: 구글 검색 결과 페이지입니다. "이미지 주소 복사"를 사용하세요.');
+            if (url.includes('google.com/imgres') || url.includes('share.google') || url.includes('google.com/search')) {
+                setHelperMessage('팁: 구글 검색/공유 주소입니다. 이미지를 우클릭하여 "이미지 주소 복사"를 선택한 후 붙여넣으세요.');
             } else {
                 setHelperMessage('');
             }

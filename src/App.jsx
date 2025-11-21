@@ -8,6 +8,7 @@ import { useBlocks } from './context/BlockContext';
 import { createProject, saveProject, loadProject as loadProjectFromStorage } from './utils/projectStorage';
 import { encodeProjectForUrl, decodeProjectFromUrl } from './utils/urlSharing';
 import { updateMetaTags } from './utils/metaTags';
+import { shortenUrl } from './utils/urlShortener';
 
 const CreateProjectDialog = React.lazy(() => import('./components/CreateProjectDialog'));
 const ProjectList = React.lazy(() => import('./components/ProjectList'));
@@ -90,14 +91,20 @@ function App() {
     }
   };
 
-  const handleDeploy = () => {
+  const handleDeploy = async () => {
     if (!state.currentProject) return;
     handleSaveProject(); // Auto-save before deploy
 
     try {
+      // 1. Compress project data with LZ-String
       const encodedData = encodeProjectForUrl(state.currentProject);
-      const url = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
-      setDeployUrl(url);
+      const longUrl = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
+
+      // 2. Shorten URL using TinyURL for maximum reduction
+      // This reduces URLs from ~800 chars to ~20 chars!
+      const shortUrl = await shortenUrl(longUrl);
+
+      setDeployUrl(shortUrl);
       setShowDeployDialog(true);
     } catch (error) {
       console.error('Deploy error:', error);

@@ -7,26 +7,43 @@ const MapEditor = ({ block, updateBlock }) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.9rem', fontWeight: '500' }}>
-                Place Name:
+            {/* 장소명 */}
+            <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>
+                    장소명
+                </label>
                 <input
                     type="text"
                     value={block.content.placeName || ''}
                     onChange={(e) => handleChange('placeName', e.target.value)}
-                    style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
-                    placeholder="e.g., Central Park"
+                    placeholder="예: 중앙공원"
+                    style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: 'var(--radius-md)'
+                    }}
                 />
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.9rem', fontWeight: '500' }}>
-                Address:
+            </div>
+
+            {/* 주소 */}
+            <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '0.9rem' }}>
+                    주소
+                </label>
                 <input
                     type="text"
                     value={block.content.address || ''}
                     onChange={(e) => handleChange('address', e.target.value)}
-                    style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
-                    placeholder="e.g., 123 Main St, New York, NY"
+                    placeholder="예: 서울시 강남구 테헤란로 123"
+                    style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: 'var(--radius-md)'
+                    }}
                 />
-            </label>
+            </div>
         </div>
     );
 };

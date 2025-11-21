@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const SlideBlock = ({ content, style }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const slides = content.slides || [];
+    const interval = content.interval || 3; // Default 3 seconds
+
+    // Auto-advance slides
+    useEffect(() => {
+        if (slides.length <= 1) return; // Don't auto-advance if only 1 slide
+
+        const timer = setInterval(() => {
+            setCurrentIndex((prev) => (prev + 1) % slides.length);
+        }, interval * 1000);
+
+        return () => clearInterval(timer);
+    }, [slides.length, interval, currentIndex]);
 
     if (slides.length === 0) {
         return (

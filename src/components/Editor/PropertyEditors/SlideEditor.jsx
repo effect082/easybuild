@@ -43,6 +43,38 @@ const SlideEditor = ({ block, updateBlock }) => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div>
                 <h3 style={{ margin: '0 0 12px 0', fontSize: '1rem', fontWeight: '600' }}>슬라이드 관리</h3>
+
+                {/* Interval Configuration */}
+                <div style={{ marginBottom: '12px' }}>
+                    <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.85rem', fontWeight: '600' }}>
+                        슬라이드 전환 간격 (초)
+                    </label>
+                    <input
+                        type="number"
+                        min="1"
+                        max="7"
+                        step="0.1"
+                        value={block.content.interval || 3}
+                        onChange={(e) => {
+                            const value = parseFloat(e.target.value);
+                            if (value >= 1 && value <= 7) {
+                                updateBlock(block.id, { content: { ...block.content, interval: value } });
+                            }
+                        }}
+                        placeholder="3"
+                        style={{
+                            width: '100%',
+                            padding: '8px',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius-sm)',
+                            fontSize: '0.85rem'
+                        }}
+                    />
+                    <p style={{ fontSize: '0.75rem', color: '#666', marginTop: '4px' }}>
+                        슬라이드 자동 전환 속도 (1초 ~ 7초, 소수점 가능: 1.5, 2.5 등)
+                    </p>
+                </div>
+
                 <button
                     onClick={addSlide}
                     style={{
